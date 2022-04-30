@@ -13,8 +13,8 @@ import java.time.LocalDate;
 
 import static javax.persistence.GenerationType.SEQUENCE;
 
-@Entity(name = "Subcategory")
-@Table(name = "subcategory")
+@Entity(name = "Transaction")
+@Table(name = "transaction")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

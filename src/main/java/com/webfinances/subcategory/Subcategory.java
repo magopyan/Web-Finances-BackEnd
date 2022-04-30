@@ -1,5 +1,6 @@
 package com.webfinances.subcategory;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.webfinances.category.Category;
 import com.webfinances.categorytype.CategoryType;
 import com.webfinances.transaction.Transaction;
@@ -59,6 +60,7 @@ public class Subcategory {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @JsonIgnore
     private List<Transaction> transactionList;
 
 

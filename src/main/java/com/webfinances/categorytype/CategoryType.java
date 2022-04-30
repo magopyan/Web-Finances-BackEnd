@@ -1,5 +1,6 @@
 package com.webfinances.categorytype;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.webfinances.account.Account;
 import com.webfinances.category.Category;
 import lombok.AllArgsConstructor;
@@ -56,6 +57,7 @@ public class CategoryType {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @JsonIgnore
     private List<Category> categoryList;
 
 

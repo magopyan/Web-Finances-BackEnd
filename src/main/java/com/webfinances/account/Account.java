@@ -1,5 +1,6 @@
 package com.webfinances.account;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.webfinances.accounttype.AccountType;
 import com.webfinances.transaction.Transaction;
 import lombok.AllArgsConstructor;
@@ -68,6 +69,7 @@ public class Account {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @JsonIgnore
     private List<Transaction> transactionList;
 
 
