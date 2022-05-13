@@ -1,4 +1,4 @@
-package com.webfinances;
+package com.webfinances.config;
 
 import com.webfinances.account.Account;
 import com.webfinances.account.AccountRepo;
