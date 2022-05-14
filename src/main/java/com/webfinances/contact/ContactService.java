@@ -19,6 +19,6 @@ public class ContactService {
 
     public Map<String, String> sendEmailAndReturnMessage(ContactForm contactForm) {
         emailSenderService.sendEmail(contactForm.getName(), contactForm.getEmail(), contactForm.getMessage());
-        return Collections.singletonMap("response", "Message successfully submitted. ✔️");
+        return Collections.singletonMap("response", "Message submitted successfully. ✔️");
     }
 }
