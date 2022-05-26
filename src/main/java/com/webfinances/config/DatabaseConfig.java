@@ -30,18 +30,18 @@ public class DatabaseConfig {
             String imageUrl = "https://static.independent.co.uk/2021/12/07/10/PRI213893584.jpg?quality=75&width=990&auto=webp&crop=982:726,smart";
 
             // ACCOUNT TYPES
-            AccountType cashAT = new AccountType("Cash", imageUrl);                           // id=imageUrl
-            AccountType savingsAT = new AccountType("Savings Account", imageUrl);   // id=imageUrl
-            AccountType creditAT = new AccountType("Credit Card", imageUrl);             // id=3
-            AccountType debitAT = new AccountType("Debit Card", imageUrl);               // id=4
-            AccountType otherAT = new AccountType("Other", imageUrl);               // id=5
+            AccountType cashAT = new AccountType("Cash", "https://www.pngarts.com/files/13/Cash-PNG-Image-Background.png");                           // id=imageUrl
+            AccountType savingsAT = new AccountType("Savings Account", "https://www.clipartmax.com/png/full/285-2859190_savings-clip-art.png");   // id=imageUrl
+            AccountType creditAT = new AccountType("Credit Card", "https://i.postimg.cc/vZXSZRMZ/credit-card.png");             // id=3
+            AccountType debitAT = new AccountType("Debit Card", "https://www.pngkit.com/png/full/250-2504712_atm-card-png.png");               // id=4
+            AccountType otherAT = new AccountType("Other", "https://i.postimg.cc/C1GpLPKM/pngwing-com-2.png");               // id=5
             accountTypeRepo.saveAll(List.of(cashAT, savingsAT, creditAT, debitAT, otherAT));
 
 
             // ACCOUNTS
-            Account cashA = new Account("cash", 58.16, imageUrl, cashAT); // id=imageUrl
-            Account creditA = new Account("creditt", 25.15, imageUrl, creditAT); // id=imageUrl
-            accountRepo.saveAll(List.of(cashA, creditA));
+//            Account cashA = new Account("cash", 58.16, cashAT); // id=imageUrl
+//            Account creditA = new Account("creditt", 25.15, creditAT); // id=imageUrl
+//            accountRepo.saveAll(List.of(cashA, creditA));
 
 
             // CATEGORY TYPES

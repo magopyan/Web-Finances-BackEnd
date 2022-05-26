@@ -6,6 +6,7 @@ import com.webfinances.transaction.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,11 +29,13 @@ public class AccountService {
                 .orElseThrow(() -> new EntityNotFoundException("Account with ID " + id + " was not found!"));
     }
 
-    public Account addAccount(Account account) {
+    public Account addAccount(Account account, Principal principal) {
         Optional<Account> existingAccount = accountRepo.findAccountByName(account.getName());
         if(existingAccount.isPresent() /* i.e. != null */) {
             throw new UniqueConstraintException("You already have an existing account named " + account.getName() + "!");
         }
+        System.out.println(principal.getName());
+        account.setUserId(principal.getName());
         return accountRepo.save(account);
     }
 

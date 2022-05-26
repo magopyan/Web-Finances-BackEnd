@@ -49,12 +49,6 @@ public class Account {
     )
     private Double balance;
 
-    @Column(
-            name = "image_url",
-            nullable = false
-    )
-    private String imageUrl;
-
     @ManyToOne
     @JoinColumn(
             name = "account_type_id",
@@ -62,6 +56,12 @@ public class Account {
             nullable = false
     )
     private AccountType accountType;
+
+    @Column(
+            name = "user_id",
+            nullable = false
+    )
+    private String userId;
 
     @OneToMany(
             mappedBy = "account",
@@ -73,17 +73,17 @@ public class Account {
     private List<Transaction> transactionList;
 
 
-    public Account(String name, Double balance, String imageUrl, AccountType accountType) {
+
+
+    public Account(String name, Double balance, AccountType accountType) {
         this.name = name;
         this.balance = balance;
-        this.imageUrl = imageUrl;
         this.accountType = accountType;
     }
 
-    public Account(String name, Double balance, String imageUrl, AccountType accountType, List<Transaction> transactionList) {
+    public Account(String name, Double balance, AccountType accountType, List<Transaction> transactionList) {
         this.name = name;
         this.balance = balance;
-        this.imageUrl = imageUrl;
         this.accountType = accountType;
         this.transactionList = transactionList;
     }
