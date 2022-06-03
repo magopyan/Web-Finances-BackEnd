@@ -13,6 +13,6 @@ public class AccountForm {
     private String name;
 
     @NotBlank(message = "Please enter a starting balance!")
-    @Pattern(regexp = "^[0-9]*\\.[0-9]{2}$", message = "The starting balance has to be in the format 123.45")
+    @Pattern(regexp = "^[0-9-]*\\.[0-9]{2}$", message = "The starting balance has to be in the format 123.45")
     private String balance;
 }

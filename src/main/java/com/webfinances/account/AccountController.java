@@ -1,6 +1,9 @@
 package com.webfinances.account;
 
+import com.google.firebase.auth.FirebaseAuthException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -8,7 +11,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.security.Principal;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -26,12 +28,17 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    @PostMapping(value = "/validate")
+    @PostMapping(value = "/validate-new")
     ResponseEntity<Map<String, String>> submitForm(@Valid @RequestBody AccountForm accountForm) {
         return new ResponseEntity<>(Collections.singletonMap("response", "Account form validated. ✔️"), HttpStatus.OK);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @PostMapping(value = "/validate-edit")
+    ResponseEntity<Map<String, String>> submitEditForm(@Valid @RequestBody AccountForm accountForm) {
+        return new ResponseEntity<>(Collections.singletonMap("response", "Account form validated. ✔️"), HttpStatus.OK);
+    }
+
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -43,10 +50,27 @@ public class AccountController {
         return errors;
     }
 
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(FirebaseAuthException.class)
+    public String handleFirebaseExceptions(FirebaseAuthException ex) {
+        return "Your session has expired. Please sign in again to refresh it.";
+    }
+
     @GetMapping("/all")
-    public ResponseEntity<List<Account>> getAllAccounts() {
-        List<Account> accounts = accountService.findAllAccounts();
+    public ResponseEntity<List<Account>> getAllAccounts(@RequestHeader (name="Authorization") String token) throws FirebaseAuthException {
+        List<Account> accounts = accountService.findAllByUserId(token);
         return new ResponseEntity<>(accounts, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/all", params = {"page"})
+    public ResponseEntity<List<Account>> getAllAccountsByPage(
+            @RequestHeader (name="Authorization") String token,
+            @RequestParam("page") int page) throws FirebaseAuthException {
+        Page<Account> accountsPage = accountService.findAllByUserIdPage(token, page);
+        if (page > accountsPage.getTotalPages()) {
+            throw new RuntimeException("There are no accounts on page " + page + ".");
+        }
+        return new ResponseEntity<>(accountsPage.getContent(), HttpStatus.OK);
     }
 
     @GetMapping("/find/{id}")
@@ -56,8 +80,8 @@ public class AccountController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Account> addAccount(@RequestBody Account account, Principal principal) {
-        Account newAccount = accountService.addAccount(account, principal);
+    public ResponseEntity<Account> addAccount(@RequestBody Account account, @RequestHeader (name="Authorization") String token) throws FirebaseAuthException {
+        Account newAccount = accountService.addAccount(account, token);
         return new ResponseEntity<>(newAccount, HttpStatus.CREATED);
     }
 
@@ -68,8 +92,9 @@ public class AccountController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteAccount(@PathVariable("id") Long id) {
-        accountService.deleteAccount(id);
+    public ResponseEntity<?> deleteAccount(@PathVariable("id") Long id, @RequestHeader (name="Authorization") String token) throws FirebaseAuthException {
+        accountService.deleteAccount(id, token);
+        System.out.println("deleted account with id "+id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

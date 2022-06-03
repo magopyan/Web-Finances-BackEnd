@@ -53,7 +53,7 @@ public class CategoryType {
 
     @OneToMany(
             mappedBy = "categoryType",
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )

@@ -17,7 +17,8 @@ import static javax.persistence.GenerationType.SEQUENCE;
 @Entity(name = "Account")
 @Table(
         name = "account",
-        uniqueConstraints = { @UniqueConstraint(name = "account_name_unique", columnNames = "name") }
+        uniqueConstraints = { @UniqueConstraint(name = "account_name_unique", columnNames = "name") },
+        indexes = @Index(name = "user_id_index", columnList = "user_id")
 )
 @AllArgsConstructor
 @NoArgsConstructor
@@ -65,14 +66,12 @@ public class Account {
 
     @OneToMany(
             mappedBy = "account",
-            fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
+            //,orphanRemoval = true
     )
     @JsonIgnore
     private List<Transaction> transactionList;
-
-
 
 
     public Account(String name, Double balance, AccountType accountType) {

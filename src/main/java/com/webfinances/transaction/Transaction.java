@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import static javax.persistence.GenerationType.SEQUENCE;
 
 @Entity(name = "Transaction")
-@Table(name = "transaction")
+@Table(name = "transaction", indexes = @Index(name = "user_id_index", columnList = "user_id"))
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -66,12 +66,19 @@ public class Transaction {
     )
     private Account account;
 
+    @Column(
+            name = "user_id",
+            nullable = false
+    )
+    private String userId;
 
-    public Transaction(Double amount, String note, LocalDate date, Subcategory subcategory, Account account) {
+
+    public Transaction(Double amount, String note, LocalDate date, Subcategory subcategory, Account account, String userId) {
         this.amount = amount;
         this.note = note;
         this.date = date;
         this.subcategory = subcategory;
         this.account = account;
+        this.userId = userId;
     }
 }

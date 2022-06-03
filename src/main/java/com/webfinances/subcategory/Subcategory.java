@@ -56,7 +56,7 @@ public class Subcategory {
 
     @OneToMany(
             mappedBy = "subcategory",
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
