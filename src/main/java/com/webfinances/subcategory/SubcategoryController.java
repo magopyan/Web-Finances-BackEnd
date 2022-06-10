@@ -28,6 +28,18 @@ public class SubcategoryController {
         return new ResponseEntity<>(subcategories, HttpStatus.OK);
     }
 
+    @GetMapping("/all/income")
+    public ResponseEntity<List<Subcategory>> getIncomeSubcategories() {
+        List<Subcategory> subcategories = subcategoryService.findIncomeSubcategories();
+        return new ResponseEntity<>(subcategories, HttpStatus.OK);
+    }
+
+    @GetMapping("/all/expense")
+    public ResponseEntity<List<Subcategory>> getExpenseSubcategories() {
+        List<Subcategory> subcategories = subcategoryService.findExpenseSubcategories();
+        return new ResponseEntity<>(subcategories, HttpStatus.OK);
+    }
+
     @GetMapping("/by-category/{id}")
     public ResponseEntity<List<Subcategory>> getSubcategoriesByCategoryId(@PathVariable("id") Long id) {
         List<Subcategory> subcategories = subcategoryService.findSubcategoriesByCategoryId(id);

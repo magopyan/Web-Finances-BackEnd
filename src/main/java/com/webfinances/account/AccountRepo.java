@@ -17,6 +17,8 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
 
     List<Account> findAllByName(String name);
 
+    Optional<Account> findFirstAccountByName(String name);
+
     // PAGINATION
     Page<Account> findAllByUserId(String uid, Pageable pageable);
 }

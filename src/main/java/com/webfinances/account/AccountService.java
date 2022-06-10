@@ -53,17 +53,21 @@ public class AccountService {
         return accountRepo.save(account);
     }
 
-    public Account editAccount(Account account) {
-//        accountTypeRepo.findAccountTypeById(account.getAccountType().getId())
-//                .orElseThrow(new javax.persistence.EntityNotFoundException("The selected account type does not exist!"));
-
-        List<Account> existingAccounts = accountRepo.findAllByName(account.getName());
-        for(Account acc : existingAccounts) {
-            if(acc.getId() != account.getId() && acc.getName() == account.getName()) {
-                throw new UniqueConstraintException("You already have an existing account named " + account.getName() + "!");
-            }
+    public Account editAccount(Account account, String token) throws Exception {
+        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
+        Optional<Account> existingAccount = accountRepo.findAccountById(account.getId());
+        if(existingAccount.get().getUserId().equals(decodedToken.getUid())) {
+            return accountRepo.save(account);
         }
-        return accountRepo.save(account);
+        else {
+            throw new Exception("Unauthorized edit");
+        }
+//        List<Account> existingAccounts = accountRepo.findAllByName(account.getName());
+//        for(Account acc : existingAccounts) {
+//            if(acc.getId() != account.getId() && acc.getName() == account.getName()) {
+//                throw new UniqueConstraintException("You already have an existing account named " + account.getName() + "!");
+//            }
+//        }
     }
 
     public void deleteAccount(Long id, String token) throws FirebaseAuthException {

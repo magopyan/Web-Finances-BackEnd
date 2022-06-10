@@ -1,13 +1,14 @@
 package com.webfinances.transaction;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
 import com.webfinances.exceptions.EntityNotFoundException;
-import com.webfinances.exceptions.UniqueConstraintException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TransactionService {
@@ -36,7 +37,9 @@ public class TransactionService {
         return transactionRepo.findAllBySubcategoryId(id);
     }
 
-    public Transaction addTransaction(Transaction transaction) {
+    public Transaction addTransaction(Transaction transaction, String token) throws FirebaseAuthException {
+        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
+        transaction.setUserId(decodedToken.getUid());
         return transactionRepo.save(transaction);
     }
 

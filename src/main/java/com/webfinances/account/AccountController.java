@@ -85,9 +85,12 @@ public class AccountController {
         return new ResponseEntity<>(newAccount, HttpStatus.CREATED);
     }
 
+    /// ADD TOKEN AS PARAMETER AND CHECK IF IT MATCHES THE TOKEN OF THE ACCOUNT TO EDIT
+    /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     @PutMapping("/update")
-    public ResponseEntity<Account> updateAccount(@RequestBody Account account) {
-        Account updatedAccount = accountService.editAccount(account);
+    public ResponseEntity<Account> updateAccount(@RequestBody Account account,
+                                                 @RequestHeader (name="Authorization") String token) throws Exception {
+        Account updatedAccount = accountService.editAccount(account, token);
         return new ResponseEntity<>(updatedAccount, HttpStatus.OK);
     }
 

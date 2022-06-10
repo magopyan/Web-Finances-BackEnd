@@ -45,12 +45,6 @@ public class CategoryType {
     )
     private Integer coefficient;
 
-    @Column(
-            name = "image_url",
-            nullable = false
-    )
-    private String imageUrl;
-
     @OneToMany(
             mappedBy = "categoryType",
             fetch = FetchType.LAZY,
@@ -61,16 +55,14 @@ public class CategoryType {
     private List<Category> categoryList;
 
 
-    public CategoryType(String name, Integer coefficient, String imageUrl) {
+    public CategoryType(String name, Integer coefficient) {
         this.name = name;
         this.coefficient = coefficient;
-        this.imageUrl = imageUrl;
     }
 
-    public CategoryType(String name, Integer coefficient, String imageUrl, List<Category> categoryList) {
+    public CategoryType(String name, Integer coefficient, List<Category> categoryList) {
         this.name = name;
         this.coefficient = coefficient;
-        this.imageUrl = imageUrl;
         this.categoryList = categoryList;
     }
 }

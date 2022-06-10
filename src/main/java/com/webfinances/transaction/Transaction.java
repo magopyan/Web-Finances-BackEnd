@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 
@@ -39,9 +40,9 @@ public class Transaction {
     private Double amount;
 
     @Column(
-            name = "note",
-            nullable = false
+            name = "note"
     )
+    @Nullable
     private String note;
 
     @Column(

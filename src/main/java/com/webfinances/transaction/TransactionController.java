@@ -1,14 +1,24 @@
 package com.webfinances.transaction;
 
+import com.google.firebase.auth.FirebaseAuthException;
+import com.webfinances.account.AccountForm;
 import com.webfinances.transaction.Transaction;
 import com.webfinances.transaction.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+@RestController
+@RequestMapping("/transactions")
 public class TransactionController {
 
     private final TransactionService transactionService;
@@ -16,6 +26,34 @@ public class TransactionController {
     @Autowired
     public TransactionController(TransactionService transactionService) {
         this.transactionService = transactionService;
+    }
+
+    @PostMapping(value = "/validate-new")
+    ResponseEntity<Map<String, String>> submitForm(@Valid @RequestBody TransactionForm transactionForm) {
+        return new ResponseEntity<>(Collections.singletonMap("response", "Transaction form validated. ✔️"), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/validate-edit")
+    ResponseEntity<Map<String, String>> submitEditForm(@Valid @RequestBody TransactionForm transactionForm) {
+        return new ResponseEntity<>(Collections.singletonMap("response", "Transaction form validated. ✔️"), HttpStatus.OK);
+    }
+
+    @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(FirebaseAuthException.class)
+    public String handleFirebaseExceptions(FirebaseAuthException ex) {
+        return "Your session has expired. Please sign in again to refresh it.";
     }
 
     @GetMapping("/all")
@@ -43,8 +81,9 @@ public class TransactionController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Transaction> addTransaction(@RequestBody Transaction transaction) {
-        Transaction newTransaction = transactionService.addTransaction(transaction);
+    public ResponseEntity<Transaction> addTransaction(@RequestBody Transaction transaction,
+                                                      @RequestHeader (name="Authorization") String token) throws FirebaseAuthException {
+        Transaction newTransaction = transactionService.addTransaction(transaction, token);
         return new ResponseEntity<>(newTransaction, HttpStatus.CREATED);
     }
 
