@@ -38,7 +38,13 @@ public class SubcategoryService {
     }
 
     public List<Subcategory> findExpenseSubcategories() {
-        return null;
+        List<Subcategory> subcategories = new ArrayList<>();
+        List<Category> expenseCategories = categoryRepo.findCategoriesByCategoryTypeId(2L);
+        for(Category category : expenseCategories) {
+            Optional<Subcategory> subcategory = subcategoryRepo.findSubcategoryByCategoryId(category.getId());
+            subcategories.add(subcategory.get());
+        }
+        return subcategories;
     }
 
     public List<Subcategory> findSubcategoriesByCategoryId(Long id) {

@@ -28,4 +28,8 @@ public class CategoryService {
         return categoryRepo.findCategoryById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Category with ID " + id + " was not found!"));
     }
+
+    public List<Category> findExpenseCategories() {
+        return categoryRepo.findCategoriesByCategoryTypeId(2L);
+    }
 }

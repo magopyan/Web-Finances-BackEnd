@@ -86,4 +86,11 @@ public class Account {
         this.accountType = accountType;
         this.transactionList = transactionList;
     }
+
+    public Account(String name, Double balance, AccountType accountType, String userId) {
+        this.name = name;
+        this.balance = balance;
+        this.accountType = accountType;
+        this.userId = userId;
+    }
 }

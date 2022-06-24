@@ -1,5 +1,6 @@
 package com.webfinances.category;
 
+import com.webfinances.subcategory.Subcategory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,12 @@ public class CategoryController {
     @GetMapping("/all")
     public ResponseEntity<List<Category>> getAllCategories() {
         List<Category> categories = categoryService.findAllCategories();
+        return new ResponseEntity<>(categories, HttpStatus.OK);
+    }
+
+    @GetMapping("/all/expense")
+    public ResponseEntity<List<Category>> getExpenseCategories() {
+        List<Category> categories = categoryService.findExpenseCategories();
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 

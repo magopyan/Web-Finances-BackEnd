@@ -8,7 +8,7 @@ import javax.validation.constraints.*;
 public class TransactionForm {
 
     @NotBlank(message = "Please enter a valid amount! (Example: 123.45)")
-    @Pattern(regexp = "^[0-9-]*\\.[0-9]{2}$", message = "Please enter a valid amount! (Example: 123.45)")
+    @Pattern(regexp = "^[0-9]*\\.?[0-9]{0,2}$", message = "Please enter a valid amount! (Example: 123.45)")
     private String amount;
 
     @NotBlank

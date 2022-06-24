@@ -1,10 +1,12 @@
 package com.webfinances.transaction;
 
 import com.google.firebase.auth.FirebaseAuthException;
+import com.webfinances.account.Account;
 import com.webfinances.account.AccountForm;
 import com.webfinances.transaction.Transaction;
 import com.webfinances.transaction.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -57,9 +59,33 @@ public class TransactionController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Transaction>> getAllTransactions() {
-        List<Transaction> transactions = transactionService.findAllTransactions();
+    public ResponseEntity<List<Transaction>> getAllTransactions(@RequestHeader (name="Authorization") String token) throws FirebaseAuthException {
+        List<Transaction> transactions = transactionService.findAllByUserId(token);
         return new ResponseEntity<>(transactions, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/all", params = {"page"})
+    public ResponseEntity<List<Transaction>> getAllTransactionsByPage(
+            @RequestHeader (name="Authorization") String token,
+            @RequestParam("page") int page) throws FirebaseAuthException {
+        Page<Transaction> transactionsPage = transactionService.findAllByUserIdPage(token, page);
+        if (page > transactionsPage.getTotalPages()) {
+            throw new RuntimeException("There are no accounts on page " + page + ".");
+        }
+        return new ResponseEntity<>(transactionsPage.getContent(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/all", params = {"page, startDate, endDate"})
+    public ResponseEntity<List<Transaction>> getAllTransactionsByDateRange(
+            @RequestHeader (name="Authorization") String token,
+            @RequestParam("page") int page,
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate) throws FirebaseAuthException {
+        Page<Transaction> transactionsPage = transactionService.findAllByUserIdPageDateRange(token, page, startDate, endDate);
+        if (page > transactionsPage.getTotalPages()) {
+            throw new RuntimeException("There are no accounts on page " + page + ".");
+        }
+        return new ResponseEntity<>(transactionsPage.getContent(), HttpStatus.OK);
     }
 
     @GetMapping("/find/{id}")
