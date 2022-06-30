@@ -5,8 +5,10 @@ import com.webfinances.account.Account;
 import com.webfinances.account.AccountForm;
 import com.webfinances.transaction.Transaction;
 import com.webfinances.transaction.TransactionService;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +62,8 @@ public class TransactionController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Transaction>> getAllTransactions(@RequestHeader (name="Authorization") String token) throws FirebaseAuthException {
+    public ResponseEntity<List<Transaction>> getAllTransactions(@RequestHeader (name="Authorization") String token)
+            throws FirebaseAuthException {
         List<Transaction> transactions = transactionService.findAllByUserId(token);
         return new ResponseEntity<>(transactions, HttpStatus.OK);
     }
@@ -75,18 +79,59 @@ public class TransactionController {
         return new ResponseEntity<>(transactionsPage.getContent(), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/all", params = {"page, startDate, endDate"})
+    @GetMapping(value = "/by-date-all")
     public ResponseEntity<List<Transaction>> getAllTransactionsByDateRange(
             @RequestHeader (name="Authorization") String token,
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+    ) throws FirebaseAuthException {
+        List<Transaction> transactions = transactionService.findAllByUserIdDateRange(token, startDate, endDate);
+        return new ResponseEntity<>(transactions, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/by-date")
+    public ResponseEntity<List<Transaction>> getAllTransactionsByDateRangePage(
+            @RequestHeader (name="Authorization") String token,
             @RequestParam("page") int page,
-            @RequestParam("startDate") String startDate,
-            @RequestParam("endDate") String endDate) throws FirebaseAuthException {
-        Page<Transaction> transactionsPage = transactionService.findAllByUserIdPageDateRange(token, page, startDate, endDate);
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+    ) throws FirebaseAuthException {
+        Page<Transaction> transactionsPage = transactionService.findAllByUserIdDateRangePage(token, page, startDate, endDate);
         if (page > transactionsPage.getTotalPages()) {
             throw new RuntimeException("There are no accounts on page " + page + ".");
         }
         return new ResponseEntity<>(transactionsPage.getContent(), HttpStatus.OK);
     }
+
+//    @GetMapping(value = "/by-date"
+//            // params = {"startDate, endDate"}
+//    )
+//    public ResponseEntity<List<Transaction>> getAllTransactionsByDateRange(
+//            @RequestHeader (name="Authorization") String token
+////            @RequestParam("startDate") String startDate,
+////            @RequestParam("endDate") String endDate
+//    ) throws FirebaseAuthException {
+//        List<Transaction> transactions = transactionService.findAllByUserIdDateRange(
+//                token, LocalDate.parse("2022-06-01"), LocalDate.parse("2022-06-03"));
+//        return new ResponseEntity<>(transactions, HttpStatus.OK);
+//    }
+//
+//    @GetMapping(value = "/by-date", params = {"page"}
+//            //, params = {"page, startDate, endDate"}
+//    )
+//    public ResponseEntity<List<Transaction>> getAllTransactionsByDateRangePage(
+//            @RequestHeader (name="Authorization") String token,
+//            @RequestParam("page") int page
+////            @RequestParam("startDate") String startDate,
+////            @RequestParam("endDate") String endDate
+//    ) throws FirebaseAuthException {
+//        Page<Transaction> transactionsPage = transactionService.findAllByUserIdDateRangePage(
+//                token, page, LocalDate.parse("2022-06-01"), LocalDate.parse("2022-06-03"));
+//        if (page > transactionsPage.getTotalPages()) {
+//            throw new RuntimeException("There are no accounts on page " + page + ".");
+//        }
+//        return new ResponseEntity<>(transactionsPage.getContent(), HttpStatus.OK);
+//    }
 
     @GetMapping("/find/{id}")
     public ResponseEntity<Transaction> getTransactionById(@PathVariable("id") Long id) {
@@ -94,8 +139,8 @@ public class TransactionController {
         return new ResponseEntity<>(transaction, HttpStatus.OK);
     }
 
-    @GetMapping("/by-account")
-    public ResponseEntity<List<Transaction>> getTransactionsByAccountId(Long id) {
+    @GetMapping(value = "/by-account", params = {"id"})
+    public ResponseEntity<List<Transaction>> getTransactionsByAccountId(@RequestParam("id") Long id) {
         List<Transaction> transactions = transactionService.findTransactionsByAccountId(id);
         return new ResponseEntity<>(transactions, HttpStatus.OK);
     }

@@ -16,3 +16,4 @@ public class AccountForm {
     @Pattern(regexp = "^[0-9-]*\\.?[0-9]{0,2}$", message = "The starting balance has to be in the format 123.45")
     private String balance;
 }
+

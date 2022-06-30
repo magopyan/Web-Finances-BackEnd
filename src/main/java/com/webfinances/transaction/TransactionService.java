@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.webfinances.exceptions.EntityNotFoundException;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,13 +40,17 @@ public class TransactionService {
         return transactionRepo.findAllByUserId(decodedToken.getUid(), pageable);
     }
 
-    public Page<Transaction> findAllByUserIdPageDateRange(String token, int pageNumber, String startDate, String endDate)
+    public List<Transaction> findAllByUserIdDateRange(String token, LocalDate startDate, LocalDate endDate)
+            throws FirebaseAuthException {
+        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
+        return transactionRepo.findByUserIdAndDateBetween(decodedToken.getUid(), startDate, endDate);
+    }
+
+    public Page<Transaction> findAllByUserIdDateRangePage(String token, int pageNumber, LocalDate startDate, LocalDate endDate)
             throws FirebaseAuthException {
         FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(token);
         Pageable pageable = PageRequest.of(pageNumber, 15);
-//        return transactionRepo.findAllByUserIdDateRange(decodedToken.getUid(), pageable,
-//                LocalDate.parse(startDate), LocalDate.parse(endDate));
-        return transactionRepo.findAllByUserId(decodedToken.getUid(), pageable);
+        return transactionRepo.findByUserIdAndDateBetween(decodedToken.getUid(), startDate, endDate, pageable);
     }
 
     public Transaction findTransactionById(Long id) {

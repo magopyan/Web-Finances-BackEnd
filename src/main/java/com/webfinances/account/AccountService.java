@@ -19,12 +19,10 @@ import java.util.Optional;
 public class AccountService {
     
     private final AccountRepo accountRepo;
-    private final AccountTypeRepo accountTypeRepo;
 
     @Autowired
-    public AccountService(AccountRepo accountRepo, AccountTypeRepo accountTypeRepo) {
+    public AccountService(AccountRepo accountRepo) {
         this.accountRepo = accountRepo;
-        this.accountTypeRepo = accountTypeRepo;
     }
 
     public List<Account> findAllByUserId(String token) throws FirebaseAuthException {
@@ -78,7 +76,6 @@ public class AccountService {
         }
         else {
             if(existingAccount.get().getUserId().equals(decodedToken.getUid())) {
-                System.out.println("innnn");
                 accountRepo.deleteById(id);
             }
         }

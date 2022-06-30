@@ -11,7 +11,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UserService {
 
-    private UserRepo userRepo;
     private final FirebaseAuth firebaseAuth;
 
     public Map<String, String> registerUser(UserRegisterForm userRegisterForm) {

@@ -12,6 +12,7 @@ import com.webfinances.subcategory.Subcategory;
 import com.webfinances.subcategory.SubcategoryRepo;
 import com.webfinances.transaction.Transaction;
 import com.webfinances.transaction.TransactionRepo;
+import org.apache.tomcat.jni.Local;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -194,8 +195,27 @@ public class DatabaseConfig {
 
             //  Transactions
             List<Transaction> tranList = new ArrayList<>();
+            String date = "2022-07-0";
+            Transaction tran;
+            int j = 1;
             for(int i = 0; i<47; i++) {
-                tranList.add(new Transaction(13.6*i, "note"+i, LocalDate.parse("2022-02-01"), groceriesSC, accList.get(6), "BO5TBze8Ikcvn8pOJimMSpf0zh43"));
+                if(i % 2 == 0) {
+                    tran = new Transaction(13.6*i, "note"+i, LocalDate.parse("2022-07-01"),
+                            groceriesSC, accList.get(0), "BO5TBze8Ikcvn8pOJimMSpf0zh43");
+                }
+                else {
+                    tran = new Transaction(13.6*i, "note"+i, LocalDate.parse("2022-07-01"),
+                            groceriesSC, accList.get(1), "BO5TBze8Ikcvn8pOJimMSpf0zh43");
+                }
+                if(j < 10) {
+                    tran.setDate(LocalDate.parse(date + String.valueOf(j)));
+                }
+                else {
+                    j = 1;
+                    tran.setDate(LocalDate.parse(date + String.valueOf(j)));
+                }
+                j++;
+                tranList.add(tran);
             }
             transactionRepo.saveAll(tranList);
         };

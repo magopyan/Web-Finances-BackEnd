@@ -1,6 +1,7 @@
 package com.webfinances.transaction;
 
 import com.webfinances.account.Account;
+import org.apache.tomcat.jni.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +19,10 @@ public interface TransactionRepo extends JpaRepository<Transaction, Long> {
     void deleteTransactionById(Long id);
 
     Optional<Transaction> findTransactionById(Long id);
+
+    List<Transaction> findByUserIdAndDateBetween(String uid, LocalDate startDate, LocalDate endDate);
+
+    Page<Transaction> findByUserIdAndDateBetween(String uid, LocalDate startDate, LocalDate endDate, Pageable pageable);
 
     List<Transaction> findAllByAccountId(Long id);
 

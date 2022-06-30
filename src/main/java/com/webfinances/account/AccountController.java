@@ -33,11 +33,6 @@ public class AccountController {
         return new ResponseEntity<>(Collections.singletonMap("response", "Account form validated. ✔️"), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/validate-edit")
-    ResponseEntity<Map<String, String>> submitEditForm(@Valid @RequestBody AccountForm accountForm) {
-        return new ResponseEntity<>(Collections.singletonMap("response", "Account form validated. ✔️"), HttpStatus.OK);
-    }
-
     @ResponseStatus(HttpStatus.NOT_ACCEPTABLE)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
@@ -85,8 +80,6 @@ public class AccountController {
         return new ResponseEntity<>(newAccount, HttpStatus.CREATED);
     }
 
-    /// ADD TOKEN AS PARAMETER AND CHECK IF IT MATCHES THE TOKEN OF THE ACCOUNT TO EDIT
-    /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     @PutMapping("/update")
     public ResponseEntity<Account> updateAccount(@RequestBody Account account,
                                                  @RequestHeader (name="Authorization") String token) throws Exception {
