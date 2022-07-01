@@ -1,6 +1,6 @@
 package com.webfinances.contact;
 
-import com.webfinances.config.EmailSenderService;
+import com.webfinances.utils.EmailSenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

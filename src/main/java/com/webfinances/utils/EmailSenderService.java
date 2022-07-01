@@ -1,4 +1,4 @@
-package com.webfinances.config;
+package com.webfinances.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;

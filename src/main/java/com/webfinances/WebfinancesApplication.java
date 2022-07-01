@@ -1,6 +1,5 @@
 package com.webfinances;
 
-import com.webfinances.config.ConfigProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -12,7 +11,7 @@ import org.springframework.web.filter.CorsFilter;
 import java.util.Arrays;
 
 @SpringBootApplication
-@EnableConfigurationProperties(ConfigProperties.class)
+@EnableConfigurationProperties()
 public class WebfinancesApplication {
 
 	public static void main(String[] args) {
